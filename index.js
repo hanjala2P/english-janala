@@ -22,7 +22,20 @@ const loadLevelWord = (id) => {
             }
         });
 };
+const loadWordDetails =async (id) => {
+    const url = `https://openapi.programming-hero.com/api/word/${id}`;
+    const res =await fetch (url);
+    const details =await res.json();
+    displayWordDetails(details.data);
+};
+const displayWordDetails = (word) => {
+    console.log(word);
+    const detailsBox = document.getElementById("details-container");
+    // detailsBox.innerHTML ="hi i am details";
 
+    document.getElementById("word_modal").showModal();
+    
+};
 const displayLevelWord = (words) => {
     const wordContainer = document.getElementById("word-container");
     wordContainer.innerHTML = "";
@@ -48,7 +61,7 @@ const displayLevelWord = (words) => {
                 ${word.pronunciation ? word.pronunciation : "উচ্চারণ পাওয়া যায়নি "}
             </div>
             <div class="flex justify-between items-center">
-                <button onclick="my_modal_5.showModal()" class="btn bg-blue-100 border-none hover:bg-blue-200">
+                <button onclick="loadWordDetails(${word.id})" class="btn bg-blue-100 border-none hover:bg-blue-200">
                     <i class="fa-solid fa-circle-info"></i>
                 </button>
                 <button class="btn bg-blue-100 border-none hover:bg-blue-200">
