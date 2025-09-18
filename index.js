@@ -1,3 +1,17 @@
+const createElements =(arr)=>{
+    const htmlElements =arr.map((el) => `<span class="btn bg-lime-100 border-none">${el}</span>`);
+    return(htmlElements.join(" "));
+};
+const manageLoader =(isLoading)=>{
+    if(isLoading == true){
+        document.getElementById("loader").classList.remove("hidden");
+        document.getElementById("word-container").classList.remove("hidden");
+}
+else{
+    document.getElementById("loader").classList.add("hidden");
+    document.getElementById("word-container").classList.remove("hidden");   
+}
+}
 const loadLessons = () => {
     fetch("https://openapi.programming-hero.com/api/levels/all")
         .then((res) => res.json())
@@ -10,6 +24,7 @@ const removeActive = () => {
 };
 
 const loadLevelWord = (id) => {
+    manageLoader(true);
     const url = `https://openapi.programming-hero.com/api/level/${id}`;
     fetch(url)
         .then((res) => res.json())
@@ -31,7 +46,33 @@ const loadWordDetails =async (id) => {
 const displayWordDetails = (word) => {
     console.log(word);
     const detailsBox = document.getElementById("details-container");
-    // detailsBox.innerHTML ="hi i am details";
+    detailsBox.innerHTML =`
+         <div>
+       <div>
+        <h2 class="text-2xl font-medium">${word.word} (<i class="fa-solid fa-microphone-lines font"></i> :${word.pronunciation})</h2>
+      </div>
+    <div id=" details-container">
+      <div>
+        <h2 class="font-bold">Meaning</h2>
+        <p>${word.meaning}</p>
+      </div>
+    </div>
+      <div>
+        <h2 class="font-bold">Example</h2>
+         <p>${word.sentence}</p>
+      </div>
+      <div class="space-y-2 items-center">
+        <h2 class="font-bold">Synonym </h2>
+        
+        <div class="space-y-2 items-center">${createElements(word.synonyms)} </div>
+       
+      </div>
+
+      <div>
+        <button class="btn bg-blue-900 text-white border-none">Continue Learning</button>
+      </div>
+     </div>
+    `;
 
     document.getElementById("word_modal").showModal();
     
@@ -47,6 +88,7 @@ const displayLevelWord = (words) => {
                  <h2 class="font-medium text-[32px] text-[#292524]">নেক্সট Lesson এ যান</h2>
              </div>
         `;
+        manageLoader(false);
         return;
     }
 
@@ -72,6 +114,7 @@ const displayLevelWord = (words) => {
         `;
         wordContainer.append(card);
     });
+    manageLoader(false);
 };
 
 const displayLessons = (lessons) => {
