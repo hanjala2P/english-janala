@@ -1,3 +1,9 @@
+function pronounceWord(word) {
+  const utterance = new SpeechSynthesisUtterance(word);
+  utterance.lang = "en-EN"; // English
+  window.speechSynthesis.speak(utterance);
+}
+
 const createElements =(arr)=>{
     const htmlElements =arr.map((el) => `<span class="btn bg-lime-100 border-none">${el}</span>`);
     return(htmlElements.join(" "));
@@ -47,7 +53,7 @@ const displayWordDetails = (word) => {
     console.log(word);
     const detailsBox = document.getElementById("details-container");
     detailsBox.innerHTML =`
-         <div>
+         <div class="space-y-4">
        <div>
         <h2 class="text-2xl font-medium">${word.word} (<i class="fa-solid fa-microphone-lines font"></i> :${word.pronunciation})</h2>
       </div>
@@ -69,7 +75,7 @@ const displayWordDetails = (word) => {
       </div>
 
       <div>
-        <button class="btn bg-blue-900 text-white border-none">Continue Learning</button>
+        <button class="btn bg-primary text-white border-none">Continue Learning</button>
       </div>
      </div>
     `;
@@ -106,7 +112,7 @@ const displayLevelWord = (words) => {
                 <button onclick="loadWordDetails(${word.id})" class="btn bg-blue-100 border-none hover:bg-blue-200">
                     <i class="fa-solid fa-circle-info"></i>
                 </button>
-                <button class="btn bg-blue-100 border-none hover:bg-blue-200">
+                <button onclick="pronounceWord('${word.word}')" class="btn bg-blue-100 border-none hover:bg-blue-200">
                     <i class="fa-solid fa-volume-high"></i>
                 </button>
             </div>
@@ -135,3 +141,22 @@ const displayLessons = (lessons) => {
 };
 
 loadLessons();
+
+document.getElementById("search-btn").addEventListener("click", () =>{
+    removeActive();
+    const searchInput = document.getElementById("input-search");
+    const searchText = searchInput.value.trim().toLowerCase(); // 
+    console.log(searchText);
+
+    fetch("https://openapi.programming-hero.com/api/words/all")
+        .then(res => res.json())
+        .then(data => {   // 
+            const allWords = data.data;
+            console.log(allWords);
+
+            const filteredWords = allWords.filter(word =>
+                word.word.toLowerCase().includes(searchText)
+            );
+            displayLevelWord(filteredWords);
+        });
+});
